@@ -1,0 +1,18 @@
+Metadata-Version: 2.1
+Name: adr-tools-python
+Version: 0.0.1
+Summary: A package to provide adr-tools to python
+Home-page: https://github.com/javatechy/dokr
+Author: Victor Sluiter
+Author-email: vsluiter@yahoo.com
+License: UNKNOWN
+Description: # README #
+        
+        This is a project to make a python equivalent of the adr-tools by npryce on [github](https://github.com/npryce/adr-tools)
+        
+        This project is very, very slow going and might not even finish. Please drop me a line if you want to contribute.
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Description-Content-Type: text/markdown

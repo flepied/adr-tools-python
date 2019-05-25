@@ -1,0 +1,8 @@
+#!/usr/bin/env python3
+# https://stackoverflow.com/questions/5709616/whats-the-difference-between-these-two-python-shebangs
+
+
+from src.adr_config import adr_config
+config = adr_config();
+print(config.get("bin_dir"))
+print("hello!");

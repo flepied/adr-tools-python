@@ -1,0 +1,7 @@
+README.md
+adr-tools
+setup.py
+adr_tools_python.egg-info/PKG-INFO
+adr_tools_python.egg-info/SOURCES.txt
+adr_tools_python.egg-info/dependency_links.txt
+adr_tools_python.egg-info/top_level.txt
