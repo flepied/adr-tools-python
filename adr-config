@@ -1,0 +1,12 @@
+#!/usr/bin/env python3
+# https://stackoverflow.com/questions/5709616/whats-the-difference-between-these-two-python-shebangs
+
+
+from src.adr_util import adr_config
+
+if __name__ == "__main__":
+    import sys
+    config = adr_config()
+    # print output if run standalone
+    for key,val in config.items():
+        print(key,"=\"",val,"\"", sep='')

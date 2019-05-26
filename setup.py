@@ -4,7 +4,7 @@ with open("README.md", "r") as fh:
 setuptools.setup(
      name='adr-tools-python',  
      version='0.0.1',
-     scripts=['adr-tools'] ,
+     scripts=['adr-config', 'adr-new'] ,
      author="Victor Sluiter",
      author_email="vsluiter@yahoo.com",
      description="A package to provide adr-tools to python",
@@ -17,4 +17,7 @@ setuptools.setup(
          "License :: OSI Approved :: MIT License",
          "Operating System :: OS Independent",
      ],
+     install_requires=[
+         'argparse'
+     ]
  )
