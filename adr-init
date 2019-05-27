@@ -14,7 +14,7 @@ from src.adr_util import adr_config
 ##    record architectural decisions with ADRs.
 ##
 ## If the DIRECTORY is not given, the ADRs are stored in the directory `doc/adr`.
-
+import os
 from src.adr_util import adr_config
 from src.adr_util import adr_init
 
@@ -28,4 +28,4 @@ args = parser.parse_args()
 if __name__ == "__main__":
     import sys
     config = adr_config()
-    adr_init(config,args.directory)
+    adr_init(config, os.getcwd() ,args.directory)

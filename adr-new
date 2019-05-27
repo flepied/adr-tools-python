@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
 # https://stackoverflow.com/questions/5709616/whats-the-difference-between-these-two-python-shebangs
 
+import os
 # add argument parser
 import argparse
 from src.adr_util import adr_config
+from src.adr_util import adr_new
+from src.adr_util import find_alternate_dir
 
 # Prerequisite: adr-init has had to have run.
 
@@ -57,7 +60,7 @@ from src.adr_util import adr_config
 ##
 
 parser = argparse.ArgumentParser(description='Creates a new, numbered ADR. The TITLE_TEXT arguments are concatenated to form the title of the new ADR')
-parser.add_argument('title of ADR', metavar='title',  nargs='+',
+parser.add_argument('title_adr', metavar='title of ADR',  nargs='+',
                     help='Title of the ADR')
 
 # -s is option with 1 argument (nargs = 1)
@@ -70,12 +73,9 @@ parser.add_argument('-l', dest='link', nargs=1,
 
             
 args = parser.parse_args()
-print(args)
-print(args.link)
 
 if __name__ == "__main__":
     import sys
     config = adr_config()
-    # print output if run standalone
-    for key,val in config.items():
-        print(key,"=\"",val,"\"", sep='')
+    adr_new(config, os.getcwd(), find_alternate_dir(),  args.title_adr)
+    
