@@ -16,6 +16,24 @@ def adr_config():
     }
     return(config)
 
+# adr-init
+
+# file IO:
+# https://docs.python.org/3/tutorial/inputoutput.html
+
+def adr_init(config, dirname):
+    if (str(dirname) != 'doc/adr/'):
+        with open('.adr-dir','w') as f:
+            f.write(dirname)
+# create subdirectories
+# https://stackabuse.com/creating-and-deleting-directories-with-python/        
+    try:  
+        os.makedirs(dirname)
+    except OSError:  
+        print ("Creation of the directory %s failed" % dirname)
+    else:  
+        print ("Successfully created the directory %s" % dirname)
+    return(0)
 
 # adr-new
 def adr_new():

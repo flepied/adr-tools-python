@@ -5,6 +5,8 @@
 import argparse
 from src.adr_util import adr_config
 
+# Prerequisite: adr-init has had to have run.
+
 # comment from original Bash version: 
 
 ## usage: adr new [-s SUPERCEDED] [-l TARGET:LINK:REVERSE-LINK] TITLE_TEXT...
@@ -57,15 +59,19 @@ from src.adr_util import adr_config
 parser = argparse.ArgumentParser(description='Creates a new, numbered ADR. The TITLE_TEXT arguments are concatenated to form the title of the new ADR')
 parser.add_argument('title of ADR', metavar='title',  nargs='+',
                     help='Title of the ADR')
-parser.add_argument('-s', dest='supreseded', nargs=1, 
+
+# -s is option with 1 argument (nargs = 1)
+parser.add_argument('-s', dest='superseded', nargs=1, 
                     help='A reference (number or partial filename) of a previous decision that the new decision supercedes')
-parser.add_argument('-l', dest='accumulate', nargs=1, 
-                    help='Links the new ADR to a previous ADR.  TARGET is a reference (number or partial filename) of a previous decision. LINK is the description of the link created in the new ADR. REVERSE-LINK is the description of the link created in the existing ADR that will refer to the new ADR.')
+
+# -l is option with 1 argument
+parser.add_argument('-l', dest='link', nargs=1, 
+                    help='TARGET:LINK:REVERSE-LINK, Links the new ADR to a previous ADR.  TARGET is a reference (number or partial filename) of a previous decision. LINK is the description of the link created in the new ADR. REVERSE-LINK is the description of the link created in the existing ADR that will refer to the new ADR.')
 
             
 args = parser.parse_args()
 print(args)
-#print(args.accumulate(args.title))
+print(args.link)
 
 if __name__ == "__main__":
     import sys
