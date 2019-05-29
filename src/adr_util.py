@@ -93,7 +93,7 @@ def adr_find_index(adr_dir):
 # adr-new
 def adr_new(config, localpath, title):
     # start with no error; if it changes along the way, we have an error
-
+    _adr_dir()
     result = 'no error'
 
     # directory for the template
@@ -154,3 +154,26 @@ def adr_write_number_and_header(dst,adr_index,adr_title=None):
     print(test)
             
 
+def _adr_dir():
+    found=False;
+    adr_directory = ''
+    localdir = '.'
+    dir = os.getcwd() +'/'
+    while (dir != '/'):
+
+        print("_adr_dir: dir = %s", dir)
+        adr_directory = dir + '/doc/adr/'
+        existspath = os.path.isdir(adr_directory)
+        exists_adr_dir = os.path.isfile(dir + '.adr-dir')
+        if existspath:
+            print ("dirctory found %s", adr_directory)
+            found = True
+        elif exists_adr_dir:
+            print ("dirctory found %s", adr_directory)
+            found= True
+        else:
+            None
+        
+        dir = os.path.dirname(dir)
+
+    return(0)
