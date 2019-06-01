@@ -155,25 +155,22 @@ def adr_write_number_and_header(dst,adr_index,adr_title=None):
             
 
 def _adr_dir():
-    found=False;
-    adr_directory = ''
-    localdir = '.'
-    dir = os.getcwd() +'/'
-    while (dir != '/'):
+    newdir = dir = os.getcwd()
 
-        print("_adr_dir: dir = %s", dir)
-        adr_directory = dir + '/doc/adr/'
-        existspath = os.path.isdir(adr_directory)
-        exists_adr_dir = os.path.isfile(dir + '.adr-dir')
-        if existspath:
-            print ("dirctory found %s", adr_directory)
-            found = True
-        elif exists_adr_dir:
-            print ("dirctory found %s", adr_directory)
-            found= True
-        else:
-            None
+# confuscated do-while
+# https://www.javatpoint.com/python-do-while-loop
+    while True:
+        print('_adr_dir: ' + dir)
+        if (os.path.isdir(os.path.join(dir , '/doc/adr'))):
+            print('_adr_dir, found /doc/adr in ' + os.path.join(dir , 'doc/adr' ))
+        elif (os.path.isfile(os.path.join(dir , '.adr-dir'))):
+            print('_adr_dir, found .adr_dir in ' + os.path.join(dir,find_alternate_dir()))
+        # https://stackoverflow.com/questions/9856683/using-pythons-os-path-how-do-i-go-up-one-directory
+        # Go up one directory
+        newdir = os.path.dirname(dir)
+        # If you can't go up further, you've reached the root.
+        if newdir ==  dir:
+            break
         
-        dir = os.path.dirname(dir)
-
+        dir = newdir
     return(0)
