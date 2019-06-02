@@ -41,11 +41,12 @@ def adr_init(config, localpath, dirname):
 
 # This function is used to read the .adr-dir file (written in adr_init), to determine the relative path for the 
 # adrs. default is /doc/adr/ . 
-def find_alternate_dir():
-    directory = 'doc/adr/'
+# In order to find this file in another directory, an optional directory can be passed.
+def find_alternate_dir(dir = 'doc/adr/'):
+    directory = dir
     try:
         # open local file
-        fh = open('.adr-dir', 'r')
+        fh = open(os.path.join(dir,'.adr-dir'), 'r')
         # add slash to remain compatible with 'default' /doc/adr/
         directory = fh.read()+'/'
     except FileNotFoundError:
@@ -58,7 +59,7 @@ def adr_find_index(adr_dir):
     from os import listdir
     from os.path import isfile, join
     
-    adr_index = dict();
+    adr_index = dict()
     # start with index is zero, will be incremented after search
     adr_index['n'] = 0
     adr_index['text'] = '0000'
@@ -161,10 +162,12 @@ def _adr_dir():
 # https://www.javatpoint.com/python-do-while-loop
     while True:
         print('_adr_dir: ' + dir)
-        if (os.path.isdir(os.path.join(dir , '/doc/adr'))):
+        if (os.path.isdir(os.path.join(dir , 'doc/adr'))):
             print('_adr_dir, found /doc/adr in ' + os.path.join(dir , 'doc/adr' ))
+            break
         elif (os.path.isfile(os.path.join(dir , '.adr-dir'))):
-            print('_adr_dir, found .adr_dir in ' + os.path.join(dir,find_alternate_dir()))
+            print('_adr_dir, found .adr_dir, referring to ' + os.path.join(dir,find_alternate_dir(dir)))
+            break
         # https://stackoverflow.com/questions/9856683/using-pythons-os-path-how-do-i-go-up-one-directory
         # Go up one directory
         newdir = os.path.dirname(dir)
