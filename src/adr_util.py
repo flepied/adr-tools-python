@@ -4,6 +4,23 @@ import fileinput
 from shutil import copyfile
 from datetime import date
 
+#by default, do not print.
+# Most hints on using variables came from this page: https://stackoverflow.com/questions/1977362/how-to-create-module-wide-variables-in-python 
+# variable is a list, because lists are mutable.
+__adr_verbose = [False]
+
+def get_adr_verbosity():
+    return __adr_verbose[0]
+
+def set_adr_verbosity(verbosity):
+    adr_print('verbosity set to ' + str(verbosity) )
+    if verbosity == True:
+        print('Verbose printing is enabled')
+        __adr_verbose[0] = True
+    else:
+        #print('silent...')
+        __adr_verbose[0] = False
+
 # adr-config:
 # Original bash implementation generates strings with paths to
 # bin and template dir (both the same).
@@ -11,6 +28,10 @@ from datetime import date
 # In this python implementation I've changed this to a 
 # dictionary. I think this is more future proof and way
 # more 'pythonic' and less error prone.
+
+def adr_print(text):
+    if(get_adr_verbosity() == True):
+        print(text)
 
 def adr_config():
     dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -64,7 +85,7 @@ def adr_find_index(adr_dir):
     adr_index['n'] = 0
     adr_index['text'] = '0000'
     adr_index['adr_list'] = list()
-    print('adr_find_index; adr directory is '+ adr_dir)
+    adr_print('adr_find_index; adr directory is '+ adr_dir)
     onlyfiles = [f for f in listdir(adr_dir) if isfile(join(adr_dir, f))]
     # search for highest adr number
     for file in onlyfiles:
@@ -78,7 +99,7 @@ def adr_find_index(adr_dir):
             if (number > adr_index['n']):
                 adr_index['n'] = number
         except: 
-            print (file + " is not a valid ADR filename")
+            adr_print (file + " is not a valid ADR filename")
             None
     adr_index['n'] += 1
 
@@ -88,7 +109,7 @@ def adr_find_index(adr_dir):
     adr_index['text'] = '{0:04d}'.format(adr_index['n'])
     #print(onlyfiles)
     print(adr_index['adr_list'])
-    print("new adr_index is " + adr_index['text'])
+    adr_print("new adr_index is " + adr_index['text'])
     return adr_index
 
 # adr-new
@@ -104,7 +125,7 @@ def adr_new(config, localpath, title):
     try:
         # check if title can be converted to string, and 
         # replace spaces with dashes on the go
-        print(title)
+        adr_print(title)
         
         if type(title) == list:
             title_checked = "-".join(title).replace(' ','-')
@@ -121,7 +142,7 @@ def adr_new(config, localpath, title):
         adr_index  = adr_find_index(adr_dir)
         # combine data to make destination path
         dst =  os.path.join(adr_dir , adr_index['text'] + '-' + title_checked + '.md')
-        print('adr-new; ' + src + ' ' + dst)
+        adr_print('adr-new; ' + src + ' ' + dst)
         # copy template to destination directory, with correct title
         copyfile(src, dst)
         adr_write_number_and_header(dst, adr_index, title_checked)
@@ -161,16 +182,16 @@ def _adr_dir():
 # confuscated do-while
 # https://www.javatpoint.com/python-do-while-loop
     while True:
-        print('_adr_dir: ' + dir)
+        adr_print('_adr_dir: ' + dir)
         dir_docadr = os.path.join(dir , 'doc/adr')
         path_adrdir = os.path.join(dir , '.adr-dir')
         if (os.path.isdir(dir_docadr)):
-            print('_adr_dir, found /doc/adr in ' + dir_docadr )
+            adr_print('_adr_dir, found /doc/adr in ' + dir_docadr )
             newdir = dir_docadr
             break
         elif (os.path.isfile(path_adrdir)):
             adrdir_directory=os.path.join(dir,find_alternate_dir(dir))
-            print('_adr_dir, found .adr_dir, referring to ' + adrdir_directory)
+            adr_print('_adr_dir, found .adr_dir, referring to ' + adrdir_directory)
             newdir = adrdir_directory
             break
         # https://stackoverflow.com/questions/9856683/using-pythons-os-path-how-do-i-go-up-one-directory
@@ -184,3 +205,35 @@ def _adr_dir():
         
         dir = newdir
     return(newdir)
+
+def adr_list(dir):
+    from os import listdir
+    from os.path import isfile, join
+
+    adr_dir = _adr_dir()
+    adr_print('adr_list: dir = '+ adr_dir)
+    
+    adr_index = dict()
+    # start with index is zero, will be incremented after search
+    adr_index['n'] = 0
+    adr_index['text'] = '0000'
+    adr_index['adr_list'] = list()
+    adr_print('adr_find_index; adr directory is '+ adr_dir)
+    onlyfiles = [f for f in listdir(adr_dir) if isfile(join(adr_dir, f))]
+    # search for highest adr number
+    for file in onlyfiles:
+        try:
+            #print(type(file))
+            # get number by reading first 4 characters
+            # if this fails, the 'except' will be executed, and actions past this line will be skipped 
+            number = int(file[:4])
+            #print(number)
+            # increase index if higher number is found
+            if (number > adr_index['n']):
+                adr_index['n'] = number
+            adr_index['adr_list'].append(file)
+        except: 
+            adr_print (file + " is not a valid ADR filename")
+            None
+    adr_index['n'] += 1
+    return sorted(adr_index['adr_list'])
