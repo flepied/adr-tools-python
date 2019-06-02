@@ -204,7 +204,7 @@ def _adr_dir():
             break
         
         dir = newdir
-    return(newdir)
+    return(os.path.relpath(newdir,os.getcwd()))
 
 def adr_list(dir):
     from os import listdir
@@ -213,27 +213,22 @@ def adr_list(dir):
     adr_dir = _adr_dir()
     adr_print('adr_list: dir = '+ adr_dir)
     
-    adr_index = dict()
-    # start with index is zero, will be incremented after search
-    adr_index['n'] = 0
-    adr_index['text'] = '0000'
-    adr_index['adr_list'] = list()
+    adr_list = list()
     adr_print('adr_find_index; adr directory is '+ adr_dir)
     onlyfiles = [f for f in listdir(adr_dir) if isfile(join(adr_dir, f))]
     # search for highest adr number
     for file in onlyfiles:
         try:
-            #print(type(file))
             # get number by reading first 4 characters
             # if this fails, the 'except' will be executed, and actions past this line will be skipped 
             number = int(file[:4])
             #print(number)
             # increase index if higher number is found
-            if (number > adr_index['n']):
-                adr_index['n'] = number
-            adr_index['adr_list'].append(file)
+            adr_list.append(file)
         except: 
             adr_print (file + " is not a valid ADR filename")
             None
-    adr_index['n'] += 1
-    return sorted(adr_index['adr_list'])
+    adr_paths = list()
+    for adr in sorted(adr_list):
+        adr_paths.append(os.path.join(adr_dir,adr))
+    return adr_paths
