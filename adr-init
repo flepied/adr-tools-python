@@ -4,7 +4,7 @@
 # add argument parser
 import argparse
 from src.adr_util import adr_config
-from src.adr_util import adr_set_verbosity
+from src.adr_util import set_adr_verbosity
 
 ## usage: adr init [DIRECTORY]
 ## 

@@ -115,7 +115,6 @@ def adr_find_index(adr_dir):
 # adr-new
 def adr_new(config, localpath, title):
     # start with no error; if it changes along the way, we have an error
-    _adr_dir()
     result = 'no error'
 
     # directory for the template
@@ -204,7 +203,27 @@ def _adr_dir():
             break
         
         dir = newdir
+    # original adr-tools returns relative path w.r.t path from which the function was called.
     return(os.path.relpath(newdir,os.getcwd()))
+
+
+def _adr_file(number):
+    list_of_adrs = list()
+    list_of_adrs = adr_list(os.getcwd())
+    try:
+        # some coercion. This is already done
+        # in the command line tools used by
+        # adr-tools
+        if number < 1 :
+            number = 1
+        if number > len(list_of_adrs):
+            number = len(list_of_adrs)
+        number = number - 1
+        adr_print('adr_file; ' + list_of_adrs[number] )
+        return(list_of_adrs[number])
+    except:
+        adr_print('adr_file could not retrieve adr ' + str(number))
+        return list()
 
 def adr_list(dir):
     from os import listdir
