@@ -64,7 +64,7 @@ def adr_find_index(adr_dir):
     adr_index['n'] = 0
     adr_index['text'] = '0000'
     adr_index['adr_list'] = list()
-
+    print('adr_find_index; adr directory is '+ adr_dir)
     onlyfiles = [f for f in listdir(adr_dir) if isfile(join(adr_dir, f))]
     # search for highest adr number
     for file in onlyfiles:
@@ -116,12 +116,12 @@ def adr_new(config, localpath, title):
     
     if (result == 'no error' ):
         # location of adrs
-        adr_dir = localpath+'/'+ find_alternate_dir()
+        adr_dir = _adr_dir()
         # find highest index
         adr_index  = adr_find_index(adr_dir)
         # combine data to make destination path
-        dst =  adr_dir + adr_index['text'] + '-' + title_checked + '.md'
-        #print(src + ' ' + dst)
+        dst =  os.path.join(adr_dir , adr_index['text'] + '-' + title_checked + '.md')
+        print('adr-new; ' + src + ' ' + dst)
         # copy template to destination directory, with correct title
         copyfile(src, dst)
         adr_write_number_and_header(dst, adr_index, title_checked)
@@ -162,18 +162,25 @@ def _adr_dir():
 # https://www.javatpoint.com/python-do-while-loop
     while True:
         print('_adr_dir: ' + dir)
-        if (os.path.isdir(os.path.join(dir , 'doc/adr'))):
-            print('_adr_dir, found /doc/adr in ' + os.path.join(dir , 'doc/adr' ))
+        dir_docadr = os.path.join(dir , 'doc/adr')
+        path_adrdir = os.path.join(dir , '.adr-dir')
+        if (os.path.isdir(dir_docadr)):
+            print('_adr_dir, found /doc/adr in ' + dir_docadr )
+            newdir = dir_docadr
             break
-        elif (os.path.isfile(os.path.join(dir , '.adr-dir'))):
-            print('_adr_dir, found .adr_dir, referring to ' + os.path.join(dir,find_alternate_dir(dir)))
+        elif (os.path.isfile(path_adrdir)):
+            adrdir_directory=os.path.join(dir,find_alternate_dir(dir))
+            print('_adr_dir, found .adr_dir, referring to ' + adrdir_directory)
+            newdir = adrdir_directory
             break
         # https://stackoverflow.com/questions/9856683/using-pythons-os-path-how-do-i-go-up-one-directory
         # Go up one directory
         newdir = os.path.dirname(dir)
         # If you can't go up further, you've reached the root.
         if newdir ==  dir:
+            #default value is 'doc/adr/'
+            newdir = 'doc/adr/'
             break
         
         dir = newdir
-    return(0)
+    return(newdir)
