@@ -225,6 +225,14 @@ def _adr_file(number):
         adr_print('adr_file could not retrieve adr ' + str(number))
         return list()
 
+def _adr_title(number):
+    adr = _adr_file(number)
+    with open(adr,'r') as f:
+        line = f.readline()
+    # Strip markdown header 1 (#), and strip newline
+    return(line[2:-1])
+
+
 def adr_list(dir):
     from os import listdir
     from os.path import isfile, join
