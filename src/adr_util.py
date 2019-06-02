@@ -243,7 +243,7 @@ def adr_list(dir):
     adr_list = list()
     adr_print('adr_find_index; adr directory is '+ adr_dir)
     onlyfiles = [f for f in listdir(adr_dir) if isfile(join(adr_dir, f))]
-    # search for highest adr number
+    # make list of adr files. All files *not* starting with 4 numbers are skipped.
     for file in onlyfiles:
         try:
             # get number by reading first 4 characters
