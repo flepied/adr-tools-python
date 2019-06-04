@@ -10,7 +10,7 @@ setuptools.setup(
      description="A package to provide adr-tools to python",
      long_description=long_description,
    long_description_content_type="text/markdown",
-     url="https://github.com/javatechy/dokr",
+     url="https://bitbucket.org/tinkerer_/adr-tools-python/",
      packages=setuptools.find_packages(),
      classifiers=[
          "Programming Language :: Python :: 3",

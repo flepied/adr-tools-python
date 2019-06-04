@@ -138,13 +138,28 @@ def adr_new(config, localpath, title):
         # location of adrs
         adr_dir = _adr_dir()
         # find highest index
-        adr_index  = adr_find_index(adr_dir)
+
+        # first, find last item in adr_list
+        try:
+            highest_file_name = adr_list(adr_dir)[-1]
+           # extract filename from path
+            adr_index = int(os.path.basename(highest_file_name)[:4])
+        except:
+            #if no valid index (for example when running adr-init), make a new one
+            adr_index = 0
+        adr_print('adr-new; highest index = ' + str(adr_index))
+        # increment index for new adr
+        adr_index += 1
+        # Format number to string with 4 characters
+        # https://stackoverflow.com/questions/11714859/how-to-display-the-first-few-characters-of-a-string-in-python
+        adr_index_text = '{0:04d}'.format(adr_index)
+ 
         # combine data to make destination path
-        dst =  os.path.join(adr_dir , adr_index['text'] + '-' + title_checked + '.md')
+        dst =  os.path.join(adr_dir , adr_index_text + '-' + title_checked + '.md')
         adr_print('adr-new; ' + src + ' ' + dst)
         # copy template to destination directory, with correct title
         copyfile(src, dst)
-        adr_write_number_and_header(dst, adr_index, title_checked)
+        adr_write_number_and_header(dst, adr_index_text, title_checked)
         #adr_write_header_title(dst, title_checked)
         #adr_write_date(dst, date)
         #adr_write_status(dst,status)
@@ -159,7 +174,7 @@ def adr_write_number_and_header(dst,adr_index,adr_title=None):
         if fileinput.filelineno() == 1:
             test = line
             # first replace number
-            line = '# '+str(adr_index['n'])+'. ' + test.split('.',1)[1]
+            line = '# '+ adr_index +'. ' + test.split('.',1)[1]
             # now add title if needed
             if (adr_title != None):
                 line = line.split('.',1)[0] + '. ' + adr_title.replace('-',' ').title()
