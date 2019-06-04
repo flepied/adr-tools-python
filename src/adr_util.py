@@ -74,43 +74,6 @@ def find_alternate_dir(dir = 'doc/adr/'):
         None
     return directory
 
-def adr_find_index(adr_dir):
-    # find all files in a directory
-    # https://stackoverflow.com/questions/3207219/how-do-i-list-all-files-of-a-directory
-    from os import listdir
-    from os.path import isfile, join
-    
-    adr_index = dict()
-    # start with index is zero, will be incremented after search
-    adr_index['n'] = 0
-    adr_index['text'] = '0000'
-    adr_index['adr_list'] = list()
-    adr_print('adr_find_index; adr directory is '+ adr_dir)
-    onlyfiles = [f for f in listdir(adr_dir) if isfile(join(adr_dir, f))]
-    # search for highest adr number
-    for file in onlyfiles:
-        try:
-            adr_index['adr_list'].append(file)
-            #print(type(file))
-            # get number by reading first 4 characters
-            number = int(file[:4])
-            #print(number)
-            # increase index if higher number is found
-            if (number > adr_index['n']):
-                adr_index['n'] = number
-        except: 
-            adr_print (file + " is not a valid ADR filename")
-            None
-    adr_index['n'] += 1
-
-    # Format number to string with 4 characters
-    # https://stackoverflow.com/questions/11714859/how-to-display-the-first-few-characters-of-a-string-in-python
-
-    adr_index['text'] = '{0:04d}'.format(adr_index['n'])
-    #print(onlyfiles)
-    print(adr_index['adr_list'])
-    adr_print("new adr_index is " + adr_index['text'])
-    return adr_index
 
 # adr-new
 def adr_new(config, localpath, title):
@@ -163,7 +126,7 @@ def adr_new(config, localpath, title):
         #adr_write_header_title(dst, title_checked)
         #adr_write_date(dst, date)
         #adr_write_status(dst,status)
-    return(result)
+    return(dst)
 
 # Write ADR number in filename and header
 def adr_write_number_and_header(dst,adr_index,adr_title=None):
@@ -187,7 +150,7 @@ def adr_write_number_and_header(dst,adr_index,adr_title=None):
         #keep existing content 
             print(line, end='')
     fileinput.close()
-    print(test)
+    #print(test)
             
 
 def _adr_dir():

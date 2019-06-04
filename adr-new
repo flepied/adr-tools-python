@@ -64,7 +64,7 @@ parser.add_argument('title_adr', metavar='title of ADR',  nargs='+',
                     help='Title of the ADR')
 
 # -s is option with 1 argument (nargs = 1)
-parser.add_argument('-s', dest='superseded', nargs=1, 
+parser.add_argument('-s', dest='superseded', nargs=1, action='append', 
                     help='A reference (number or partial filename) of a previous decision that the new decision supercedes')
 
 # -l is option with 1 argument
@@ -82,5 +82,7 @@ if __name__ == "__main__":
     if args.verbose:
         set_adr_verbosity(True)
     config = adr_config()
-    adr_new(config, os.getcwd(),  args.title_adr)
+    new_adr = adr_new(config, os.getcwd(),  args.title_adr)
+    #print(new_adr)
+    #print(args.superseded)
     
