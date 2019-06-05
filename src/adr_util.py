@@ -151,7 +151,69 @@ def adr_write_number_and_header(dst,adr_index,adr_title=None):
             print(line, end='')
     fileinput.close()
     #print(test)
-            
+
+
+def _adr_add_link(source, linktype, target):
+    source_adr = _adr_file(source)
+    target_adr = _adr_file(target)
+
+    stats = "find_status"
+    adr_print('_adr_add_link; source_adr = ' + source_adr + ' target_adr is ' + target_adr )
+    for line in fileinput.input(source_adr, inplace=True):
+        if stats == "find_status":
+            #try to find ## Status at start of line
+            if line.find('## Status',0) == 0:
+                stats = "in status"
+            print(line, end='')
+            #TODO, using _adr_title_ here causes printing of debug info in ADR file.
+        elif stats == "in status":
+            print('\n' + linktype + '[' + _adr_title(source) +'](' + os.path.basename(target_adr)+')\n' + line, end='')
+            stats = "copy all"
+        elif stats == "copy all":
+            print(line, end='')
+        else:
+            print(line, end='')
+    fileinput.close()
+
+# This is a very ugly state machine, based on the original awk application in adr-tools
+# Probably it can be rewritten much better by someone skilled in the art of Python.
+# Purpose of the function is to remove the status 'status' from the adr file. As far as I can judge, this 
+# is only used in adr-new, to remove the 'Accepted' status.
+
+def _adr_remove_status(status, adr):
+    stats = "find_status"
+    adr_print('_adr_remove_status; status = ' + status + ' adr is ' + adr )
+    for line in fileinput.input(adr, inplace=True):
+        if stats == "find_status":
+            #try to find ## Status at start of line
+            if line.find('## Status',0) != -1:
+                #adr_print('_adr_remove_status, ## Status found in '+ str(fileinput.lineno()))
+                stats = "in status"
+            print(line, end='')
+        elif stats == "in status":
+            # break if a new header is found
+            if '##' in line:
+                stats = "copy all"
+                print(line, end='')
+            # if requested status is at the start of the line
+            elif line.find(status + '\n',0) != -1:
+                #adr_print('_adr_remove_status; found ' + status )
+                #remove contents
+                print('',end='')
+                stats = "after removal"
+            else:
+                print(line, end='')
+        elif stats == "after removal":
+            # meant to remove trailing empty line if needed. Not sure how to implement.
+            if line.isalnum():
+                print(line, end='')
+            else:
+                #remove whitespace
+                print('',end='')
+            stats = "copy all"
+        else:
+            print(line, end='')
+    fileinput.close()
 
 def _adr_dir():
     newdir = dir = os.getcwd()
@@ -188,6 +250,7 @@ def _adr_dir():
 def _adr_file(number):
     list_of_adrs = list()
     list_of_adrs = adr_list(os.getcwd())
+    adr_print('_adr_file: number is ' + str(number) )
     try:
         # some coercion. This is already done
         # in the command line tools used by
@@ -197,14 +260,15 @@ def _adr_file(number):
         if number > len(list_of_adrs):
             number = len(list_of_adrs)
         number = number - 1
-        adr_print('adr_file; ' + list_of_adrs[number] )
+        adr_print('_adr_file; ' + list_of_adrs[number] )
         return(list_of_adrs[number])
     except:
-        adr_print('adr_file could not retrieve adr ' + str(number))
+        adr_print('_adr_file could not retrieve adr ' + str(number))
         return list()
 
 def _adr_title(number):
     adr = _adr_file(number)
+    adr_print('_adr_title; number is ' + str(number) + ', adr is '+  adr)
     with open(adr,'r') as f:
         line = f.readline()
     # Strip markdown header 1 (#), and strip newline
@@ -216,10 +280,8 @@ def adr_list(dir):
     from os.path import isfile, join
 
     adr_dir = _adr_dir()
-    adr_print('adr_list: dir = '+ adr_dir)
-    
     adr_list = list()
-    adr_print('adr_find_index; adr directory is '+ adr_dir)
+    adr_print('adr_list; adr directory is '+ adr_dir)
     onlyfiles = [f for f in listdir(adr_dir) if isfile(join(adr_dir, f))]
     # make list of adr files. All files *not* starting with 4 numbers are skipped.
     for file in onlyfiles:

@@ -6,8 +6,12 @@ import os
 import argparse
 from src.adr_util import adr_config
 from src.adr_util import adr_new
-from src.adr_util import set_adr_verbosity
+from src.adr_util import adr_list
 
+from src.adr_util import set_adr_verbosity
+from src.adr_util import _adr_remove_status
+from src.adr_util import _adr_add_link
+from src.adr_util import adr_print
 # Prerequisite: adr-init has had to have run.
 
 # comment from original Bash version: 
@@ -83,6 +87,18 @@ if __name__ == "__main__":
         set_adr_verbosity(True)
     config = adr_config()
     new_adr = adr_new(config, os.getcwd(),  args.title_adr)
+    
+    if args.superseded != None:
+        for supersede in args.superseded:
+           
+            supersede_index = int(supersede[0]) 
+             #decrement. Index 0 is ADR 1
+             #TODO shouldn't I use _adr_file for this?
+            superseded_adr = adr_list(os.path.dirname(new_adr))[supersede_index-1]
+            adr_print('adr-new; supersede_index = ' + str(supersede_index) +  ' , adr is ' + superseded_adr)
+            _adr_remove_status('Accepted', superseded_adr)
+            _adr_add_link(supersede_index, 'Superceded by', int(os.path.basename(new_adr)[:4]))
+            _adr_add_link(int(os.path.basename(new_adr)[:4]), 'Supercedes', supersede_index )
     #print(new_adr)
     #print(args.superseded)
     
