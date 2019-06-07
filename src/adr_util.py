@@ -267,24 +267,6 @@ def _adr_file(adr_text):
     return (0,"")
 
 
-########## Old implementation, using number input ####
-#     list_of_adrs = adr_list(os.getcwd())
-#    adr_print('_adr_file: number is ' + str(number) )
-#    try:
-#        # some coercion. This is already done
-#        # in the command line tools used by
-#        # adr-tools
-#        if number < 1 :
-#            number = 1
-#        if number > len(list_of_adrs):
-#            number = len(list_of_adrs)
-#        number = number - 1
-#        adr_print('_adr_file; ' + list_of_adrs[number] )
-#        return(list_of_adrs[number])
-#    except:
-#        adr_print('_adr_file could not retrieve adr ' + str(number))
-#        return list()
-
 # adr_title returns first line of ADR, without the # and without newline at the end
 def _adr_title(text):
     # adr_file returns tuple with number and string
