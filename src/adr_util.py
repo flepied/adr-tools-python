@@ -154,11 +154,14 @@ def adr_write_number_and_header(dst,adr_index,adr_title=None):
 
 
 def _adr_add_link(source, linktype, target):
-    source_adr = _adr_file(source)
-    target_adr = _adr_file(target)
+    source_adr = _adr_file(source)[1]
+    target_adr = _adr_file(target)[1]
 
     stats = "find_status"
     adr_print('_adr_add_link; source_adr = ' + source_adr + ' target_adr is ' + target_adr )
+    link_text = '\n' + linktype + ' [' + _adr_title(target) +'](' + os.path.basename(target_adr)+')\n'
+    # Careful! No adr_print stuff in this section, because it will end up
+    # in the adr, as fileinput takes over stdout
     for line in fileinput.input(source_adr, inplace=True):
         if stats == "find_status":
             #try to find ## Status at start of line
@@ -167,7 +170,7 @@ def _adr_add_link(source, linktype, target):
             print(line, end='')
             #TODO, using _adr_title_ here causes printing of debug info in ADR file.
         elif stats == "in status":
-            print('\n' + linktype + '[' + _adr_title(source) +'](' + os.path.basename(target_adr)+')\n' + line, end='')
+            print(link_text + line, end='')
             stats = "copy all"
         elif stats == "copy all":
             print(line, end='')
@@ -247,33 +250,53 @@ def _adr_dir():
     return(os.path.relpath(newdir,os.getcwd()))
 
 
-def _adr_file(number):
-    list_of_adrs = list()
-    list_of_adrs = adr_list(os.getcwd())
-    adr_print('_adr_file: number is ' + str(number) )
-    try:
-        # some coercion. This is already done
-        # in the command line tools used by
-        # adr-tools
-        if number < 1 :
-            number = 1
-        if number > len(list_of_adrs):
-            number = len(list_of_adrs)
-        number = number - 1
-        adr_print('_adr_file; ' + list_of_adrs[number] )
-        return(list_of_adrs[number])
-    except:
-        adr_print('_adr_file could not retrieve adr ' + str(number))
-        return list()
+# adr_file returns first file that contains the text. Since list_of_adrs returns a 
+# sorted list, searching for the ADR number will generally yield the correct ADR. 
+# 
+def _adr_file(adr_text):
+    list_of_adrs = adr_list(_adr_dir())
+    # string or integer input 
+    if type(adr_text) is int:
+        adr_text = str(adr_text)
+    for adr in list_of_adrs:
+        #adr_print("_adr_file; adr = " + adr)
+        if adr_text in adr:
+            adr_print("_adr_file; found " + adr_text + " in " + adr)
+            return (int(os.path.basename(adr)[0:4]),adr)
+    adr_print("_adr_file; no record found containing " + adr_text)
+    return (0,"")
 
-def _adr_title(number):
-    adr = _adr_file(number)
-    adr_print('_adr_title; number is ' + str(number) + ', adr is '+  adr)
-    with open(adr,'r') as f:
-        line = f.readline()
+
+########## Old implementation, using number input ####
+#     list_of_adrs = adr_list(os.getcwd())
+#    adr_print('_adr_file: number is ' + str(number) )
+#    try:
+#        # some coercion. This is already done
+#        # in the command line tools used by
+#        # adr-tools
+#        if number < 1 :
+#            number = 1
+#        if number > len(list_of_adrs):
+#            number = len(list_of_adrs)
+#        number = number - 1
+#        adr_print('_adr_file; ' + list_of_adrs[number] )
+#        return(list_of_adrs[number])
+#    except:
+#        adr_print('_adr_file could not retrieve adr ' + str(number))
+#        return list()
+
+# adr_title returns first line of ADR, without the # and without newline at the end
+def _adr_title(text):
+    # adr_file returns tuple with number and string
+    adr = _adr_file(text)
+    adr_print('_adr_title; number is ' + str(adr[0]) + ', adr is '+  adr[1] + 'path is '+ os.getcwd())
+    with open(adr[1],'r') as f:
+        adrline = f.readline()   
+        adr_print('_adr_title; line is ')
     # Strip markdown header 1 (#), and strip newline
-    return(line[2:-1])
+    return(adrline[2:-1])
 
+# adr_list returns a sorted list of all ADRs
 
 def adr_list(dir):
     from os import listdir
@@ -286,16 +309,13 @@ def adr_list(dir):
     # make list of adr files. All files *not* starting with 4 numbers are skipped.
     for file in onlyfiles:
         try:
-            # get number by reading first 4 characters
             # if this fails, the 'except' will be executed, and actions past this line will be skipped 
-            number = int(file[:4])
-            #print(number)
-            # increase index if higher number is found
             adr_list.append(file)
         except: 
             adr_print (file + " is not a valid ADR filename")
             None
     adr_paths = list()
+    # create full path adr list
     for adr in sorted(adr_list):
         adr_paths.append(os.path.join(adr_dir,adr))
     return adr_paths

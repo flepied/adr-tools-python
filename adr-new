@@ -11,6 +11,7 @@ from src.adr_util import adr_list
 from src.adr_util import set_adr_verbosity
 from src.adr_util import _adr_remove_status
 from src.adr_util import _adr_add_link
+from src.adr_util import _adr_file
 from src.adr_util import adr_print
 # Prerequisite: adr-init has had to have run.
 
@@ -91,14 +92,12 @@ if __name__ == "__main__":
     if args.superseded != None:
         for supersede in args.superseded:
            
-            supersede_index = int(supersede[0]) 
-             #decrement. Index 0 is ADR 1
-             #TODO shouldn't I use _adr_file for this?
-            superseded_adr = adr_list(os.path.dirname(new_adr))[supersede_index-1]
-            adr_print('adr-new; supersede_index = ' + str(supersede_index) +  ' , adr is ' + superseded_adr)
-            _adr_remove_status('Accepted', superseded_adr)
-            _adr_add_link(supersede_index, 'Superceded by', int(os.path.basename(new_adr)[:4]))
-            _adr_add_link(int(os.path.basename(new_adr)[:4]), 'Supercedes', supersede_index )
+            supersede_text =supersede[0]
+            # index zero of return value of _adr_file is the number of the adr
+            adr_print('adr-new; supersede_text = ' + supersede_text +  ' , adr is ' + _adr_file(supersede_text)[1])
+            _adr_remove_status('Accepted', _adr_file(supersede_text)[1])
+            _adr_add_link(supersede_text, 'Superceded by', _adr_file(new_adr)[1])
+            _adr_add_link(_adr_file(new_adr)[1], 'Supercedes', supersede_text )
     #print(new_adr)
     #print(args.superseded)
     
