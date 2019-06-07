@@ -5,18 +5,30 @@ setuptools.setup(
      name='adr-tools-python',  
      version='0.0.1',
      scripts=['adr-config', 'adr-new', 'adr-init','adr-list'] ,
+     entry_points = {
+        'console_scripts':[
+            'adr-init = adr-tools-python.adr-init:main',
+            'adr-new = adr-tools-python.adr-new:main',
+        ]
+     },
      author="Victor Sluiter",
      author_email="vsluiter@yahoo.com",
+     license="MIT",
      description="A package to provide adr-tools to python",
      long_description=long_description,
    long_description_content_type="text/markdown",
      url="https://bitbucket.org/tinkerer_/adr-tools-python/",
      packages=setuptools.find_packages(),
      classifiers=[
+         "Development Status :: 4 - Beta",
+         "Intended Audience :: Developers",
          "Programming Language :: Python :: 3",
          "License :: OSI Approved :: MIT License",
          "Operating System :: OS Independent",
      ],
+     keywords=["adr","architecture decision record"],
+     py_modules = ["adr_util"],
+     python_requires='>=3',
      install_requires=[
          'argparse'
      ]
