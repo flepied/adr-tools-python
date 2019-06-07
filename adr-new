@@ -6,8 +6,13 @@ import os
 import argparse
 from src.adr_util import adr_config
 from src.adr_util import adr_new
-from src.adr_util import find_alternate_dir
+from src.adr_util import adr_list
 
+from src.adr_util import set_adr_verbosity
+from src.adr_util import _adr_remove_status
+from src.adr_util import _adr_add_link
+from src.adr_util import _adr_file
+from src.adr_util import adr_print
 # Prerequisite: adr-init has had to have run.
 
 # comment from original Bash version: 
@@ -64,18 +69,48 @@ parser.add_argument('title_adr', metavar='title of ADR',  nargs='+',
                     help='Title of the ADR')
 
 # -s is option with 1 argument (nargs = 1)
-parser.add_argument('-s', dest='superseded', nargs=1, 
+parser.add_argument('-s', dest='superseded', nargs=1, action='append', 
                     help='A reference (number or partial filename) of a previous decision that the new decision supercedes')
 
 # -l is option with 1 argument
-parser.add_argument('-l', dest='link', nargs=1, 
+parser.add_argument('-l', dest='linkadr', nargs=1, 
                     help='TARGET:LINK:REVERSE-LINK, Links the new ADR to a previous ADR.  TARGET is a reference (number or partial filename) of a previous decision. LINK is the description of the link created in the new ADR. REVERSE-LINK is the description of the link created in the existing ADR that will refer to the new ADR.')
+
+# -v is option to set verbose mode
+parser.add_argument('--verbose','-v',help='increase verbosity, display debug messages', action='store_true')
 
             
 args = parser.parse_args()
 
 if __name__ == "__main__":
     import sys
+    if args.verbose:
+        set_adr_verbosity(True)
     config = adr_config()
-    adr_new(config, os.getcwd(),  args.title_adr)
+    new_adr = adr_new(config, os.getcwd(),  args.title_adr)
+    
+    if args.superseded != None:
+        for supersede in args.superseded:
+           
+            supersede_text =supersede[0]
+            # index zero of return value of _adr_file is the number of the adr
+            adr_print('adr-new; supersede_text = ' + supersede_text +  ' , adr is ' + _adr_file(supersede_text)[1])
+            _adr_remove_status('Accepted', _adr_file(supersede_text)[1])
+            _adr_add_link(supersede_text, 'Superceded by', _adr_file(new_adr)[1])
+            _adr_add_link(_adr_file(new_adr)[1], 'Supercedes', supersede_text )
+    
+    # example: -l "5:Amends:Amended by" 
+    if args.linkadr != None:
+         for linkadr in args.linkadr:
+            try:
+                adr_print('adr-new; linktext = ' + linkadr )
+                #split by colon
+                target, link, reverse_link = linkadr.split(':')
+                # index zero of return value of _adr_file is the number of the adr
+                _adr_add_link(_adr_file(new_adr)[1] , link, _adr_file(target)[1])
+                _adr_add_link(_adr_file(target)[1], reverse_link, _adr_file(new_adr)[1] )
+            except:
+                print("failed to process -l option. Error in argument formatting?")
+    #print(new_adr)
+    #print(args.superseded)
     

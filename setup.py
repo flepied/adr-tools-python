@@ -4,13 +4,13 @@ with open("README.md", "r") as fh:
 setuptools.setup(
      name='adr-tools-python',  
      version='0.0.1',
-     scripts=['adr-config', 'adr-new', 'adr-init'] ,
+     scripts=['adr-config', 'adr-new', 'adr-init','adr-list'] ,
      author="Victor Sluiter",
      author_email="vsluiter@yahoo.com",
      description="A package to provide adr-tools to python",
      long_description=long_description,
    long_description_content_type="text/markdown",
-     url="https://github.com/javatechy/dokr",
+     url="https://bitbucket.org/tinkerer_/adr-tools-python/",
      packages=setuptools.find_packages(),
      classifiers=[
          "Programming Language :: Python :: 3",
