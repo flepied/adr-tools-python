@@ -137,21 +137,25 @@ def adr_write_number_and_header(dst,adr_index,adr_title=None):
         if fileinput.filelineno() == 1:
             test = line
             # first replace number
-            line = '# '+ adr_index +'. ' + test.split('.',1)[1]
+            line = '# '+ str(int(adr_index)) +'. ' + test.split('.',1)[1]
             # now add title if needed
             if (adr_title != None):
-                line = line.split('.',1)[0] + '. ' + adr_title.replace('-',' ').title()
+                #insert title with one capital at the start
+                line = line.split('.',1)[0] + '. ' + adr_title.replace('-',' ').capitalize()
             print(line,end='\n')
         elif fileinput.filelineno() == 3:
             # https://www.programiz.com/python-programming/datetime/current-datetime
             today = date.today()
             print('Date: ' + today.strftime("%Y-%m-%d") )
+        elif fileinput.filelineno() == 7:
+            print('Accepted', end='\n')
         else:
         #keep existing content 
             print(line, end='')
     fileinput.close()
     #print(test)
 
+# add a link to another adr
 
 def _adr_add_link(source, linktype, target):
     source_adr = _adr_file(source)[1]
