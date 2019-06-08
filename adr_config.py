@@ -2,11 +2,14 @@
 # https://stackoverflow.com/questions/5709616/whats-the-difference-between-these-two-python-shebangs
 
 
-from src.adr_util import adr_config
+import adr_func
+import sys
 
-if __name__ == "__main__":
-    import sys
-    config = adr_config()
+def main(args=None):
+    config = adr_func.adr_config()
     # print output if run standalone
     for key,val in config.items():
         print(key,"=\"",val,"\"", sep='')
+
+if __name__ == "__main__":
+    main(args)
