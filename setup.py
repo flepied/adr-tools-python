@@ -3,12 +3,12 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 setuptools.setup(
      name='adr-tools-python',  
-     version='0.0.5',
+     version='0.0.8',
      #scripts=['adr-config', 'adr_new', 'adr_init','adr-list'] ,
      entry_points = {
         'console_scripts':[
-            'adr-init = adr-tools-python.adr_init:main',
-            'adr-new = adr-tools-python.adr_new:main'
+            'adr-init = adr_init:main',
+            'adr-new = adr_new:main'
         ]
      },
      author="Victor Sluiter",
@@ -19,6 +19,7 @@ setuptools.setup(
    long_description_content_type="text/markdown",
      url="https://bitbucket.org/tinkerer_/adr-tools-python/",
      packages=setuptools.find_packages(),
+     package_data={"adr_func":"template.md"},
      classifiers=[
          "Development Status :: 4 - Beta",
          "Intended Audience :: Developers",
@@ -27,7 +28,7 @@ setuptools.setup(
          "Operating System :: OS Independent",
      ],
      keywords=["adr","architecture decision record"],
-     py_modules = ["adr_util"],
+     py_modules = ["adr_func","adr_new","adr_init"],
      python_requires='>=3',
      install_requires=[
          'argparse'
