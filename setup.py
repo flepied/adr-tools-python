@@ -3,7 +3,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 setuptools.setup(
      name='adr-tools-python',  
-     version='1.0',
+     version='1.0.1',
      entry_points = {
         'console_scripts':[
             'adr-init = adr_init:main',
