@@ -76,7 +76,7 @@ def find_alternate_dir(dir = 'doc/adr/'):
 
 
 # adr-new
-def adr_new(config, localpath, title):
+def adr_new(config, localpath, title, superseded = None, links = None):
     # start with no error; if it changes along the way, we have an error
     result = 'no error'
 
@@ -123,9 +123,37 @@ def adr_new(config, localpath, title):
         # copy template to destination directory, with correct title
         copyfile(src, dst)
         adr_write_number_and_header(dst, adr_index_text, title_checked)
-        #adr_write_header_title(dst, title_checked)
-        #adr_write_date(dst, date)
-        #adr_write_status(dst,status)
+        
+        #Handle optional commands, -s and -l
+
+        # -s 
+
+        if superseded != None:
+            for supersede in superseded:         
+                supersede_text =supersede[0]
+                # index zero of return value of _adr_file is the number of the adr
+                adr_print('adr-new; supersede_text = ' + supersede_text +  ' , adr is ' + _adr_file(supersede_text)[1])
+                _adr_remove_status('Accepted', _adr_file(supersede_text)[1])
+                _adr_add_link(supersede_text, 'Superceded by', _adr_file(dst)[1])
+                _adr_add_link(_adr_file(dst)[1], 'Supercedes', supersede_text )
+        
+        # -l 
+
+        # example: -l "5:Amends:Amended by" 
+        if links != None:
+             for linkadr in links:
+                try:
+                    adr_print('adr-new; linktext = ' + linkadr )
+                    #split by colon
+                    target, link, reverse_link = linkadr.split(':')
+                    # index zero of return value of _adr_file is the number of the adr
+                    _adr_add_link(_adr_file(dst)[1] , link, _adr_file(target)[1])
+                    _adr_add_link(_adr_file(target)[1], reverse_link, _adr_file(dst)[1] )
+                except:
+                    # error message, print even if verbosity is off
+                    print("failed to process -l option. Error in argument formatting?")
+
+
     return(dst)
 
 # Write ADR number in filename and header

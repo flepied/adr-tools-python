@@ -2,8 +2,10 @@
 # https://stackoverflow.com/questions/5709616/whats-the-difference-between-these-two-python-shebangs
 
 # add argument parser
+import os
 import argparse
-from src.adr_util import adr_list
+import adr_func
+
 
 ## usage: adr init [DIRECTORY]
 ## 
@@ -14,10 +16,7 @@ from src.adr_util import adr_list
 ##    record architectural decisions with ADRs.
 ##
 ## If the DIRECTORY is not given, the ADRs are stored in the directory `doc/adr`.
-import os
-from src.adr_util import adr_config
-from src.adr_util import adr_init
-from src.adr_util import set_adr_verbosity
+
 
 parser = argparse.ArgumentParser(description='Initializes directory with ADRs')
 
@@ -34,7 +33,7 @@ if __name__ == "__main__":
     import sys
     if args.verbose:
         #print('debug')
-        set_adr_verbosity(True)
-    config = adr_config()
-    for adr in adr_list(os.getcwd()):
+        adr_func.set_adr_verbosity(True)
+    config = adr_func.adr_config()
+    for adr in adr_func.adr_list(os.getcwd()):
         print(adr)
