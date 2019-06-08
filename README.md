@@ -1,6 +1,6 @@
 # README #
 
-This is a project to get a python equivalent of the adr-tools by npryce on [github][adr-tools]. The tool can make and list and change Architecture Decision Records
+This is a project to get a python equivalent of the adr-tools by npryce on [github][adr-tools]. The tool can make and list and change Architecture Decision Records. For more information on Architecture Decision Records see the page of [Joel Parker Henderson on ADRs](https://github.com/joelparkerhenderson/architecture_decision_record).
 
 ## Installation
 
