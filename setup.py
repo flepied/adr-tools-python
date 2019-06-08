@@ -3,12 +3,12 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 setuptools.setup(
      name='adr-tools-python',  
-     version='0.0.4',
+     version='0.0.5',
      #scripts=['adr-config', 'adr_new', 'adr_init','adr-list'] ,
      entry_points = {
         'console_scripts':[
-            'adr-init = adr_init:main',
-            'adr-new = adr_new:main'
+            'adr-init = adr-tools-python.adr_init:main',
+            'adr-new = adr-tools-python.adr_new:main'
         ]
      },
      author="Victor Sluiter",

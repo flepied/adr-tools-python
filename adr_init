@@ -18,18 +18,19 @@ import argparse
 import adr_func
 import sys
 
-parser = argparse.ArgumentParser(description='Initializes directory with ADRs')
-parser.add_argument('directory',  default='doc/adr/', nargs='?',
-                    help='Directory for ADRs. Default: doc/adr')
-# -v is option to set verbose mode
-parser.add_argument('--verbose','-v',help='increase verbosity, display debug messages', action='store_true')
+def main(args = None):
+    parser = argparse.ArgumentParser(description='Initializes directory with ADRs')
+    parser.add_argument('directory',  default='doc/adr/', nargs='?',
+                        help='Directory for ADRs. Default: doc/adr')
+    # -v is option to set verbose mode
+    parser.add_argument('--verbose','-v',help='increase verbosity, display debug messages', action='store_true')
 
+    args = parser.parse_args()
 
-args = parser.parse_args()
-
-
-if __name__ == "__main__":
     if args.verbose:
         adr_func.set_adr_verbosity(True)
     config = adr_func.adr_config()
     adr_func.adr_init(config, os.getcwd() ,args.directory)
+
+if __name__ == "__main__":
+    main(args)
