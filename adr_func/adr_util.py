@@ -69,7 +69,7 @@ def find_alternate_dir(dir = 'doc/adr/'):
         # open local file
         fh = open(os.path.join(dir,'.adr-dir'), 'r')
         # add slash to remain compatible with 'default' /doc/adr/
-        directory = fh.read()+'/'
+        directory = fh.read().rstrip()+'/'
     except FileNotFoundError:
         None
     return directory
