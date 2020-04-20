@@ -2,10 +2,12 @@
 # https://stackoverflow.com/questions/5709616/whats-the-difference-between-these-two-python-shebangs
 
 import os
+
 # add argument parser
 import argparse
 import adr_func
 import sys
+
 # Prerequisite: adr-init has had to have run.
 
 # comment from original Bash version:
@@ -58,28 +60,50 @@ import sys
 ##
 
 
-if __name__ == "__main__":
-    main(args)
+def main():
 
+    parser = argparse.ArgumentParser(
+        description="Creates a new, numbered ADR. The TITLE_TEXT arguments are concatenated to form the title of the new ADR"
+    )
 
-def main(args=None):
-
-    parser = argparse.ArgumentParser(description='Creates a new, numbered ADR. The TITLE_TEXT arguments are concatenated to form the title of the new ADR')
-
-    parser.add_argument('title_adr', metavar='title of ADR',  nargs='+', help='Title of the ADR')
+    parser.add_argument(
+        "title_adr", metavar="title of ADR", nargs="+", help="Title of the ADR"
+    )
 
     # -s is option with 1 argument (nargs = 1)
-    parser.add_argument('-s', dest='superseded', nargs=1, action='append', help='A reference (number or partial filename) of a previous decision that the new decision supercedes')
+    parser.add_argument(
+        "-s",
+        dest="superseded",
+        nargs=1,
+        action="append",
+        help="A reference (number or partial filename) of a previous decision that the new decision supercedes",
+    )
 
     # -l is option with 1 argument
-    parser.add_argument('-l', dest='linkadr', nargs=1,  help='TARGET:LINK:REVERSE-LINK, Links the new ADR to a previous ADR.  TARGET is a reference (number or partial filename) of a previous decision. LINK is the description of the link created in the new ADR. REVERSE-LINK is the description of the link created in the existing ADR that will refer to the new ADR.')
+    parser.add_argument(
+        "-l",
+        dest="linkadr",
+        nargs=1,
+        help="TARGET:LINK:REVERSE-LINK, Links the new ADR to a previous ADR.  TARGET is a reference (number or partial filename) of a previous decision. LINK is the description of the link created in the new ADR. REVERSE-LINK is the description of the link created in the existing ADR that will refer to the new ADR.",
+    )
 
     # -v is option to set verbose mode
-    parser.add_argument( '--verbose', '-v', help='increase verbosity, display debug messages', action='store_true')
-
+    parser.add_argument(
+        "--verbose",
+        "-v",
+        help="increase verbosity, display debug messages",
+        action="store_true",
+    )
 
     args = parser.parse_args()
     if args.verbose:
         adr_func.set_adr_verbosity(True)
     config = adr_func.adr_config()
-    new_adr = adr_func.adr_new(config, os.getcwd(),  args.title_adr, args.superseded, args.linkadr)
+    new_adr = adr_func.adr_new(
+        config, os.getcwd(), args.title_adr, args.superseded, args.linkadr
+    )
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
